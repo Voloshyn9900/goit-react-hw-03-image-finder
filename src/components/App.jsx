@@ -1,3 +1,4 @@
+import shortid from 'shortid';
 import { fetchPhoto } from '../api';
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
@@ -11,41 +12,44 @@ export class App extends Component {
     page: 1,
   };
 
-  componentDidMount(prevProps, prevState) {}
+  async componentDidUpdate(prevProps, prevState) {
+    const { query, page } = this.state;
 
-  componentDidUpdate(prevProps, prevState) {
+    const queryCut = query.split("//")
+    const querywithOutId = queryCut[1]
 
+
+    if (prevState.query !== query || prevState.page !== page) {
+      try {
+        const addPhoto = await fetchPhoto(querywithOutId, page);
+        this.setState(prevState => {
+          return {
+            images: [...prevState.images, ...addPhoto.hits],
+          };
+        });
+      } catch (error) {
+        console.log('error');
+      }
+    }
   }
 
-  updateQuery = event => {
-    this.setState({ query: event });
+  // updateInput(newString) {
+  //   console.log("newString", newString);
+  // }
+
+  handleSubmit = newQuery => {
+    console.log('Submitting query:', newQuery);
+    this.setState({
+      query: `${shortid.generate()}//${newQuery}`,
+      page: 1,
+      images: [],
+    });
   };
 
-  handleSubmit = async event => {
-    event.preventDefault();
-    try {
-      const addedPhoto = await fetchPhoto(this.state.query);
-      this.setState(prevState => {
-        return { images: addedPhoto.hits };
-      });
-    } catch (error) {
-      console.log('error');
-    }
-    event.target.reset();
-  };
-
-  handleLoadMore = async event => {
-    try {
-      const addedPhoto = await fetchPhoto(this.state.query, this.state.page);
-      this.setState(prevState => {
-        return {
-          images: [...prevState.images, ...addedPhoto.hits],
-          // page: prevState.page + 1,
-        };
-      });
-    } catch (error) {
-      console.log('error');
-    }
+  handleLoadMore = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
 
   render() {
@@ -53,7 +57,7 @@ export class App extends Component {
 
     return (
       <>
-        <Searchbar onQuery={this.updateQuery} onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={images} />
         {images.length > 0 && <Button onLoadMore={this.handleLoadMore} />}
       </>

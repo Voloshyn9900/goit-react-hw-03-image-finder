@@ -14,3 +14,20 @@ export const Image = styled.img`
     transform: scale(1.03);
   }
 `;
+
+export const ImageModal = styled.img`
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    
+  }
+`;
+
+export const ButtonModal = styled.button`
+  display: block;
+  margin-left: auto;
+  margin-bottom: 10px;
+
+`;
