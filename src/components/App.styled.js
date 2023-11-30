@@ -34,3 +34,13 @@ export const Title = styled.h1`
   margin-bottom: 26px;
   text-align: center;
 `;
+
+export const LoaderWrapper = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

@@ -1,5 +1,7 @@
 import shortid from 'shortid';
+import { Oval } from 'react-loader-spinner';
 import { fetchPhoto } from '../api';
+import {LoaderWrapper} from "./App.styled"
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -10,17 +12,18 @@ export class App extends Component {
     images: [],
     query: '',
     page: 1,
+    isLoading: false,
   };
 
   async componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
 
-    const queryCut = query.split("//")
-    const querywithOutId = queryCut[1]
-
+    const queryCut = query.split('//');
+    const querywithOutId = queryCut[1];
 
     if (prevState.query !== query || prevState.page !== page) {
       try {
+        this.setState({ isLoading: true });
         const addPhoto = await fetchPhoto(querywithOutId, page);
         this.setState(prevState => {
           return {
@@ -29,6 +32,8 @@ export class App extends Component {
         });
       } catch (error) {
         console.log('error');
+      } finally {
+        this.setState({ isLoading: false });
       }
     }
   }
@@ -38,7 +43,6 @@ export class App extends Component {
   // }
 
   handleSubmit = newQuery => {
-    console.log('Submitting query:', newQuery);
     this.setState({
       query: `${shortid.generate()}//${newQuery}`,
       page: 1,
@@ -53,13 +57,30 @@ export class App extends Component {
   };
 
   render() {
-    const { images } = this.state;
-
+    const { images, isLoading } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={images} />
-        {images.length > 0 && <Button onLoadMore={this.handleLoadMore} />}
+        {isLoading && (
+          <LoaderWrapper>
+            <Oval
+              height={180}
+              width={180}
+              color="#2196f3"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+              ariaLabel="oval-loading"
+              secondaryColor="#2196f3"
+              strokeWidth={4}
+              strokeWidthSecondary={2}
+            />
+          </LoaderWrapper>
+        )}
+        {images.length > 0 && images.length % 12 == 0 && (
+          <Button onLoadMore={this.handleLoadMore} />
+        )}
       </>
     );
   }
