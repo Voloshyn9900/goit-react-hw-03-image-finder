@@ -78,7 +78,7 @@ export class App extends Component {
             />
           </LoaderWrapper>
         )}
-        {images.length > 0 && images.length % 12 == 0 && (
+        {images.length > 0 && images.length % 12 === 0 && (
           <Button onLoadMore={this.handleLoadMore} />
         )}
       </>

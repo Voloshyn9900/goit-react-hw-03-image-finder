@@ -39,8 +39,8 @@ export class ImageGalleryItem extends Component {
   // }
 
   render() {
-    const { id, webformatURL, largeImageURL } = this.props.image;
-    const { modalIsOpen } = this.state;
+    const { webformatURL, largeImageURL } = this.props.image;
+    const { isOpenModal } = this.state;
 
     return (
       <>
@@ -49,7 +49,7 @@ export class ImageGalleryItem extends Component {
         </GalleryItem>
 
         <Modal
-          isOpen={this.state.isOpenModal}
+          isOpen={isOpenModal}
           // onAfterOpen={afterOpenModal}
           onRequestClose={this.closeModal}
           style={customStyles}
