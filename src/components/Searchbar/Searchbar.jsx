@@ -15,6 +15,9 @@ export class Searchbar extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+     if (this.state.query.trim() === '') {
+       return;
+     }
     this.props.onSubmit(this.state.query); // Возвращяет форму наверх
   };
 
